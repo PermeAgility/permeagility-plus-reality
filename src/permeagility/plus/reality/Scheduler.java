@@ -14,6 +14,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
 import permeagility.util.Database;
 import permeagility.util.DatabaseConnection;
 import permeagility.util.QueryResult;
@@ -148,14 +152,14 @@ public class Scheduler {
 	    		List<ODocument> tasks = details.field("tasks");
 	    		for (ODocument task : tasks) {
 	    			currentTask = task.field("name");
-		    		Thread.sleep((int)(Math.random()*8000.0));
+	    			executeTask(task);
 	    		}
 	    		message = "OK";
 		    	status = JobState.FINISHED;
 	    	} catch (InterruptedException ie) {
 	    		status = JobState.TIMEOUT;
-	    		message = "Timeout after "+(System.currentTimeMillis()-startTime)+"ms in task="+currentTask;
-	    		if (DEBUG) System.out.println(details.field("name")+" got Interrupted:"+ie.getMessage()+" after "+(System.currentTimeMillis()-startTime)+"ms");
+	    		message = "Timeout after "+(System.currentTimeMillis()-startTime)+"ms in task "+currentTask;
+	    		if (DEBUG) System.out.println(details.field("name")+" task("+currentTask+") got Interrupted:"+ie.getMessage()+" after "+(System.currentTimeMillis()-startTime)+"ms");
 	    	} catch (Exception e) {
 	    		status = JobState.FAILED;
 	    		message = "Failed in task "+currentTask+": "+e.toString();
@@ -179,6 +183,19 @@ public class Scheduler {
 	    	}
     		if (DEBUG) System.out.println("Finished "+details.field("name")+" in "+(endTime-startTime)+"ms "+status);
 	    }
+	}
+	
+	private static void executeTask(ODocument task) throws InterruptedException {
+		String logicScript = task.field("logicScript");
+		ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+		try {
+			engine.eval("var taskFunction = function(object) {\n"+logicScript+"\n};");
+			Invocable invocable = (Invocable)engine;
+			Object result = invocable.invokeFunction("taskFunction", task);
+			System.out.println(result);
+		} catch (Exception e) {
+			throw new InterruptedException("Error in script "+logicScript+" message="+e.getMessage());
+		}
 	}
 	
 	public static void setLocalSetting(String key, String value) {
