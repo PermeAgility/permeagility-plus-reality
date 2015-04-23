@@ -188,13 +188,17 @@ public class Scheduler {
 	private static void executeTask(ODocument task) throws InterruptedException {
 		String logicScript = task.field("logicScript");
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+		DatabaseConnection con = null;
 		try {
-			engine.eval("var taskFunction = function(object) {\n"+logicScript+"\n};");
+			con = db.getConnection();
+			engine.eval("var taskFunction = function(task,db) {\n"+logicScript+"\n};");
 			Invocable invocable = (Invocable)engine;
-			Object result = invocable.invokeFunction("taskFunction", task);
+			Object result = invocable.invokeFunction("taskFunction", task, con);
 			System.out.println(result);
 		} catch (Exception e) {
 			throw new InterruptedException("Error in script "+logicScript+" message="+e.getMessage());
+		} finally {
+			if (con != null) db.freeConnection(con);
 		}
 	}
 	
