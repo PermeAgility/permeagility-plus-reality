@@ -140,7 +140,7 @@ public class Scheduler {
 		public long endTime;
 		public String message;
 		public Future<?> future;  // Return object - for cancelling
-		private int recordVersion;
+		//private int recordVersion;
 		
 	    public void run() {
 	    	startTime = System.currentTimeMillis();
@@ -148,7 +148,7 @@ public class Scheduler {
 	    	String currentTask = null;
 	    	try {
 				con.getDb().reload(details);
-				recordVersion = details.getVersion();
+				//recordVersion = details.getVersion();
 	    		List<ODocument> tasks = details.field("tasks");
 	    		for (ODocument task : tasks) {
 	    			currentTask = task.field("name");
