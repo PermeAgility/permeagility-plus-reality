@@ -31,7 +31,6 @@ public class Scheduler {
 	private static Scheduler instance = null;
 	public static boolean DEBUG = true;
 	
-	private static boolean INITIALIZED = false;
     private static Timer heartbeat = null;
     private static int HEARTBEAT_DELAY = 1000;
     private static int HEARTBEAT_DURATION = 1000;  // in milliseconds
@@ -51,7 +50,7 @@ public class Scheduler {
 	public Scheduler() {
 		if (instance == null) {
 			instance = this;
-			if (DEBUG) System.out.println("Created instance of Scheduler");
+			if (DEBUG) System.out.println("Created instance of Reality Scheduler");
             heartbeat = new Timer();
             heartbeat.schedule(new TimerTask() {
             	long lastRun = 0;
@@ -142,6 +141,7 @@ public class Scheduler {
 		public String message;
 		public Future<?> future;  // Return object - for cancelling
 		private int recordVersion;
+		
 	    public void run() {
 	    	startTime = System.currentTimeMillis();
 	    	status = JobState.RUNNING;
