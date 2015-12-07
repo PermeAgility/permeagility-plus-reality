@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import permeagility.util.DatabaseConnection;
 import permeagility.web.Message;
-import permeagility.web.Server;
+import permeagility.web.Security;
 import permeagility.web.Table;
 
 public class Dashboard extends Table {
@@ -72,12 +72,12 @@ public class Dashboard extends Table {
 		}
 		return 	head("Reality Dashboard",getScripts(con)+additionalStyle)
 				+body(standardLayout(con, parms, 
-					((Server.getTablePriv(con, PlusSetup.TABLE_DEVICE) & PRIV_CREATE) > 0 && view == null 
+					((Security.getTablePriv(con, PlusSetup.TABLE_DEVICE) & PRIV_CREATE) > 0 && view == null 
 						? popupForm("CREATE_NEW_ROW",null,Message.get(con.getLocale(),"CREATE_ROW"),null,"NAME",
 							paragraph("banner",Message.get(con.getLocale(), "CREATE_ROW"))
 							+hidden("TABLENAME", PlusSetup.TABLE_DEVICE)
 							+getTableRowFields(con, PlusSetup.TABLE_DEVICE, parms)
-							+submitButton(Message.get(con.getLocale(), "CREATE_ROW"))) 
+							+submitButton(con.getLocale(), "CREATE_ROW")) 
 						: "")
 					+errors.toString()
 					+sb.toString()
