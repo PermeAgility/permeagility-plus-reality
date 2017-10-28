@@ -24,11 +24,15 @@ public class PlusSetup extends permeagility.plus.PlusSetup {
 	public static String TABLE_TASK = "task";   
 	public static String TABLE_TYPE = "type";   
 	public static String TABLE_UNIT = "unit";   
+	public static String TABLE_MQTT_SUB = "mqttSubs";   
+	public static String TABLE_MQTT_PUB = "mqttPubs";   
 	
 	public static String MENU_CLASS = "permeagility.plus.reality.Dashboard";
+        public static String MENU_CLASS_SUBS = "permeagility.plus.reality.MQTTSubscribe";
+        public static String MENU_CLASS_PUBS = "permeagility.plus.reality.MQTTPublish";
 	
 	public String getName() { return "Reality"; }
-	public String getInfo() { return "Connect PermeAgility to the Real World for monitoring and control"; }
+	public String getInfo() { return "Connect to the Real World for monitoring and control"; }
 	public String getVersion() { return "0.1.0"; }
 	
 	public boolean isInstalled() { return INSTALLED; }
@@ -96,7 +100,29 @@ public class PlusSetup extends permeagility.plus.PlusSetup {
 		Setup.checkCreateColumn(con,tableSchedule, "lastFinishTime", OType.DATETIME, errors);
 		Setup.checkCreateColumn(con,tableSchedule, "lastDuration", OType.LONG, errors);
 
+      		OClass tableMQTTSub = Setup.checkCreateTable(con, oschema, TABLE_MQTT_SUB, errors, newTableGroup);
+		Setup.checkCreateColumn(con,tableMQTTSub, "name", OType.STRING, errors);
+		Setup.checkCreateColumn(con,tableMQTTSub, "host", OType.LINK, tableHost, errors);
+		Setup.checkCreateColumn(con,tableMQTTSub, "topic", OType.STRING, errors);
+		Setup.checkCreateColumn(con,tableMQTTSub, "pattern", OType.STRING, errors);  // regex for topic, can extract values
+		Setup.checkCreateColumn(con,tableMQTTSub, "tableName", OType.STRING, errors);   // specific table or extracted value
+		Setup.checkCreateColumn(con,tableMQTTSub, "columnName", OType.STRING, errors);   // specific column, extracted value, or blank (derive from data value - likely JSON properties will be used)
+		Setup.checkCreateColumn(con,tableMQTTSub, "enable", OType.BOOLEAN, errors);
+		Setup.checkCreateColumn(con,tableMQTTSub, "message", OType.STRING, errors);
+
+      		OClass tableMQTTPub = Setup.checkCreateTable(con, oschema, TABLE_MQTT_PUB, errors, newTableGroup);
+		Setup.checkCreateColumn(con,tableMQTTPub, "name", OType.STRING, errors);
+		Setup.checkCreateColumn(con,tableMQTTPub, "host", OType.LINK, tableHost, errors);
+		Setup.checkCreateColumn(con,tableMQTTPub, "tableName", OType.STRING, errors);   // table to watch
+		Setup.checkCreateColumn(con,tableMQTTPub, "columnName", OType.STRING, errors);   // column to watch for value change
+		Setup.checkCreateColumn(con,tableMQTTPub, "topic", OType.STRING, errors);       // topic to publish to
+		Setup.checkCreateColumn(con,tableMQTTPub, "value", OType.STRING, errors);  // value to send (or formula)
+		Setup.checkCreateColumn(con,tableMQTTPub, "enable", OType.BOOLEAN, errors);
+		Setup.checkCreateColumn(con,tableMQTTPub, "message", OType.STRING, errors);
+
 		Setup.createMenuItem(con,getName(),getInfo(),MENU_CLASS,parms.get("MENU"),parms.get("ROLES"));	
+		Setup.createMenuItem(con,"Subs","MQTT Subs","permeagility.plus.reality.MQTTSubscribe",parms.get("MENU"),parms.get("ROLES"));	
+		Setup.createMenuItem(con,"Pubs","MQTT Pubs","permeagility.plus.reality.MQTTPublish",parms.get("MENU"),parms.get("ROLES"));	
 		
 		setPlusInstalled(con, this.getClass().getName(), getInfo(), getVersion());
 		INSTALLED = true;
@@ -107,6 +133,8 @@ public class PlusSetup extends permeagility.plus.PlusSetup {
 
 		if (parms.get("REMOVE_MENU") != null) {
 			Setup.removeMenuItem(con, MENU_CLASS, errors);
+			Setup.removeMenuItem(con, MENU_CLASS_SUBS, errors);
+			Setup.removeMenuItem(con, MENU_CLASS_PUBS, errors);
 		}
 		
 		String remTab = parms.get("REMOVE_TABLES");
