@@ -3,18 +3,19 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.permeagility</groupId>
     <artifactId>plus-reality</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.8.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
-        <permeagility.version>0.8.2-SNAPSHOT</permeagility.version>
+        <permeagility.version>0.8.2</permeagility.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <exec.mainClass>permeagility.web.Server</exec.mainClass>
     </properties>
-       
+
     <build>
+
         <sourceDirectory>src</sourceDirectory>
 
         <plugins>
@@ -39,7 +40,7 @@
                     </execution>
                 </executions>
             </plugin>
-      
+
             <plugin>
                 <!-- Build an executable JAR -->
                 <groupId>org.apache.maven.plugins</groupId>
@@ -47,7 +48,7 @@
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs> 
+                    </descriptorRefs>
                     <appendAssemblyId>false</appendAssemblyId>
                     <outputDirectory>${basedir}/plus</outputDirectory>
                     <finalName>plus-reality</finalName>
@@ -61,7 +62,7 @@
                     </execution>
                 </executions>
             </plugin>
-                 
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -71,7 +72,7 @@
                         <goals>
                             <goal>exec</goal>
                         </goals>
-                    </execution>                    
+                    </execution>
                 </executions>
                 <configuration>
                     <executable>java</executable>
@@ -84,8 +85,16 @@
             </plugin>
 
         </plugins>
-    </build> 
-    
+    </build>
+
+    <repositories>
+        <repository>
+            <id>repo</id>
+            <snapshots><enabled>true</enabled></snapshots>
+            <url>file://${project.basedir}/repo</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>com.permeagility</groupId>
@@ -94,8 +103,8 @@
             <classifier>jar-with-dependencies</classifier>
             <scope>provided</scope>
         </dependency>
-                                
-        
+
+
         <dependency>
           <groupId>com.fazecast</groupId>
           <artifactId>jSerialComm</artifactId>
@@ -115,6 +124,69 @@
             <version>3.4.3</version>
         </dependency>
 
+        <!-- diozero libraries (0.11) not in maven yet -->
+        <dependency>
+          <groupId>diozero</groupId>
+          <artifactId>device-io</artifactId>
+          <version>1.0</version>
+
+        </dependency>
+        <dependency>
+          <groupId>diozero</groupId>
+          <artifactId>diozero-core</artifactId>
+          <version>0.11-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+          <groupId>diozero</groupId>
+          <artifactId>diozero-imu-devices</artifactId>
+          <version>0.11-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+          <groupId>diozero</groupId>
+          <artifactId>diozero-provider-bbbiolib</artifactId>
+          <version>0.11-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+          <groupId>diozero</groupId>
+          <artifactId>diozero-provider-firmata</artifactId>
+          <version>0.11-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+          <groupId>diozero</groupId>
+          <artifactId>diozero-provider-mmap</artifactId>
+          <version>0.11-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+          <groupId>diozero</groupId>
+          <artifactId>diozero-provider-pi4j</artifactId>
+          <version>0.11-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+          <groupId>diozero</groupId>
+          <artifactId>diozero-provider-pigpio</artifactId>
+          <version>0.11-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+          <groupId>diozero</groupId>
+          <artifactId>diozero-provider-remote</artifactId>
+          <version>0.11-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+          <groupId>diozero</groupId>
+          <artifactId>diozero-provider-voodoospark</artifactId>
+          <version>0.11-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+          <groupId>diozero</groupId>
+          <artifactId>diozero-provider-wiringpi</artifactId>
+          <version>0.11-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+          <groupId>diozero</groupId>
+          <artifactId>diozero-ws281x-java</artifactId>
+          <version>0.11-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
-    
+
 </project>
