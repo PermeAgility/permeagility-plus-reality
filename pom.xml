@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.permeagility</groupId>
     <artifactId>plus-reality</artifactId>
-    <version>0.8.2-SNAPSHOT</version>
+    <version>0.8.2</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -15,6 +15,7 @@
     </properties>
 
     <build>
+  	    <defaultGoal>exec:exec</defaultGoal>
 
         <sourceDirectory>src</sourceDirectory>
 
@@ -67,13 +68,6 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.4.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                    </execution>
-                </executions>
                 <configuration>
                     <executable>java</executable>
                     <arguments>
